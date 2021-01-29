@@ -8,7 +8,7 @@ export default class S3Stack extends sst.Stack {
 
   constructor(scope, id, props) {
     super(scope, id, props);
-
+    console.dir(scope);
     this.bucket = new s3.Bucket(this, "pivot", {
       // Allow client side access to the bucket from a different domain
       cors: [
