@@ -1,19 +1,17 @@
-import {RemovalPolicy} from '@aws-cdk/core';
-import { StaticWebsite } from '@cloudcomponents/cdk-static-website';
-import * as sst from "@serverless-stack/resources";
+import {cdk, RemovalPolicy} from '@aws-cdk/core';
+import { SPADeploy } from 'cdk-spa-deploy';
 
-export default class StaticWebsiteStack extends sst.Stack {
+export default class StaticWebsiteStack extends cdk.Stack {
   staticWebsite;
 
   constructor(scope, id, props) {
     super(scope, id, props);
     console.log("Static Site Scope");
     console.dir(scope);
-    this.staticWebsite = new StaticWebsite(this, 'PivotStaticWebsite', {
-      // bucketConfiguration: {
-      //   // source: '../../ui/dist',
-      //   removalPolicy: RemovalPolicy.DESTROY,
-      // },
-    });
+    this.staticWebsite = new SPADeploy(this, 'spaDeploy')
+      .createBasicSite({
+        indexDoc: 'index.html',
+        websiteFolder: '../../ui/dist'
+      });
   }
 }
