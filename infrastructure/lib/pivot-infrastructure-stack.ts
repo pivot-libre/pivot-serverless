@@ -1,11 +1,11 @@
 import {Stack, StackProps, Construct, RemovalPolicy} from '@aws-cdk/core';
-import { SPADeploy } from 'cdk-spa-deploy';
+import { SPADeploy, SPADeploymentWithCloudFront } from 'cdk-spa-deploy';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigw from '@aws-cdk/aws-apigateway';
 import { create } from 'domain';
 
 export class PivotInfrastructureStack extends Stack {
-  readonly staticWebsite : any;
+  readonly staticWebsite : SPADeploymentWithCloudFront;
   readonly api: apigw.RestApi;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -15,12 +15,21 @@ export class PivotInfrastructureStack extends Stack {
         indexDoc: 'index.html',
         websiteFolder: '../ui/dist'
       });
+    
+    const allowedOrigins = [
+      'localhost', //for local development
+      this.staticWebsite.distribution.distributionDomainName //for the static web app
+    ];
 
     this.api =  new apigw.RestApi(this, `api`, {
-      defaultCorsPreflightOptions: {
-        allowOrigins: apigw.Cors.ALL_ORIGINS,
-      },
       restApiName: `Pivot API`,
+      defaultCorsPreflightOptions: {
+        allowOrigins: allowedOrigins,
+      },
+      deployOptions: {
+        throttlingRateLimit: 1,
+        throttlingBurstLimit: 1,
+      }
     });
 
     this.createCrudApi('election', this.api);
