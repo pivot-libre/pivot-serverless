@@ -2,6 +2,7 @@ import {Stack, StackProps, Construct, RemovalPolicy} from '@aws-cdk/core';
 import { SPADeploy } from 'cdk-spa-deploy';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apigw from '@aws-cdk/aws-apigateway';
+import { create } from 'domain';
 
 export class PivotInfrastructureStack extends Stack {
   readonly staticWebsite : any;
@@ -15,7 +16,6 @@ export class PivotInfrastructureStack extends Stack {
         websiteFolder: '../ui/dist'
       });
 
-    // this.staticWebsite = 'blah';
     this.api =  new apigw.RestApi(this, `api`, {
       defaultCorsPreflightOptions: {
         allowOrigins: apigw.Cors.ALL_ORIGINS,
@@ -23,33 +23,46 @@ export class PivotInfrastructureStack extends Stack {
       restApiName: `Pivot API`,
     });
 
-    this.createCrudApi('elections', this.api);
+    this.createCrudApi('election', this.api);
   }
 
   private createCrudApi(name: string, api: apigw.RestApi) {
-    const resource = api.root.addResource(name);
-    const crudApis = ['POST', 'GET', 'PUT', 'DELETE'].map((operation) => {
-      const code = lambda.Code.fromAsset(
-        `../services/${name}`, //relative to cdk.json
-        {
-          exclude: [
-            '*.pyc',
-            'node_modules',
-            '.serverless',
-            'venv',
-            'env',
-            'tests'
-          ]
-        }
-      ); 
-      const lambdaForOperation = new lambda.Function(this, `${operation}${name}Lambda`, {
-        runtime: lambda.Runtime.PYTHON_3_6,
-        code: code,
-        handler: `handlers/${operation}.handler`
-      });
-      const lambdaIntegration = new apigw.LambdaIntegration(lambdaForOperation);
-      resource.addMethod(operation, lambdaIntegration);
-    });
-  return crudApis;
+    const entityRootResource = api.root.addResource(name);
+    entityRootResource.addMethod('POST', this.buildLambdaIntegration(name, 'create'));
+
+    const entityParameterizedResource = entityRootResource.addResource('{id}');
+    entityParameterizedResource.addMethod('GET', this.buildLambdaIntegration(name, 'read'));
+    entityParameterizedResource.addMethod('PUT', this.buildLambdaIntegration(name, 'update'));
+    entityParameterizedResource.addMethod('DELETE', this.buildLambdaIntegration(name, 'delete'));
+
+    return null;
   }
+
+  private createLambdaForCrudOperation(name: string, operation: string) {
+    const code = lambda.Code.fromAsset(
+      `../services/${name}`, //relative to cdk.json
+      {
+        exclude: [
+          '*.pyc',
+          'node_modules',
+          '.serverless',
+          'venv',
+          'env',
+          'tests'
+        ]
+      }
+    );
+    const lambdaForOperation = new lambda.Function(this, `${operation}-${name}-Lambda`, {
+      runtime: lambda.Runtime.PYTHON_3_6,
+      code: code,
+      handler: `handlers/${operation}.handler`
+    });
+    return lambdaForOperation;
+  }
+  private buildLambdaIntegration(entityName: string, nameOfOperation: string) {
+    const lambdaForOperation = this.createLambdaForCrudOperation(entityName, nameOfOperation);
+    const lambdaIntegration = new apigw.LambdaIntegration(lambdaForOperation);
+    return lambdaIntegration;
+  }
+
 }
