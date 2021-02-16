@@ -6,6 +6,18 @@
  * npm
 
 ## Project setup
+
+Copy an example JSON config file into a `.gitignore`d path in the `public` directory.
+
+```bash
+cp config.example.json public/config.json
+```
+
+Change the URL to the URL of the API listed in the output of the infrastructure deployment.
+
+
+Install dependencies
+
 ```
 npm install
 ```

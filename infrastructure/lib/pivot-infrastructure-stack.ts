@@ -19,8 +19,9 @@ export class PivotInfrastructureStack extends Stack {
       });
     
     const allowedOrigins = [
-      'localhost', //for local development
-      this.staticWebsite.distribution.distributionDomainName //for the static web app
+      // 'localhost:8080', //for local development
+      // this.staticWebsite.distribution.distributionDomainName //for the static web app
+      '*',
     ];
 
     this.userDataBucket = new Bucket(this, 'user-data', {
@@ -63,7 +64,6 @@ export class PivotInfrastructureStack extends Stack {
     entityParameterizedResource.addMethod('GET', new apigw.LambdaIntegration(readLambda));
 
     const updateLambda = this.createLambdaForCrudOperation(name, 'update');
-
     entityParameterizedResource.addMethod('PUT', new apigw.LambdaIntegration(updateLambda));
     
     const deleteLambda = this.createLambdaForCrudOperation(name, 'delete');
