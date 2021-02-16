@@ -1,6 +1,6 @@
 # Pivot Infrastructure
 
-Pivot's Infrastructure is managed with TypeScript and the CDK.
+Pivot's Infrastructure is managed with TypeScript and the [AWS CDK](https://aws.amazon.com/cdk/).
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
