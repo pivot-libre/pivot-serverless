@@ -2,25 +2,10 @@
 
 ## Requirements
 
- * nodejs
+ * nodejs v 10 +
  * npm
 
-## Project setup
-
-Copy an example JSON config file into a `.gitignore`d path in the `public` directory.
-
-```bash
-cp config.example.json public/config.json
-```
-
-Change the URL to the URL of the API listed in the output of the infrastructure deployment.
-
-
-Install dependencies
-
-```
-npm install
-```
+## Useful Commands
 
 ### Compiles and hot-reloads for development
 ```
@@ -32,10 +17,21 @@ npm run serve
 npm run build
 ```
 
+### Run tests
+```
+npm run test:unit
+```
+
 ### Lints and fixes files
 ```
 npm run lint
 ```
 
-### Customize configuration
+
+## External Configuration
+
+This app retrieves configuration at runtime from a config.json file from the root of the host serving the app. The app cannot start without it.
+This configuration lets the app know where the web services are. Since this varies from tier to tier, it is not checked into the repo.
+You can seed the configuration by copying `config.example.json` to `public/config.json`. See the [main README](../README.md) for instructions on how set the values in the file.  
+
 See [Configuration Reference](https://cli.vuejs.org/config/).
