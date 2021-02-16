@@ -1,5 +1,10 @@
 # pivot-ui
 
+## Requirements
+
+ * nodejs
+ * npm
+
 ## Project setup
 ```
 npm install
