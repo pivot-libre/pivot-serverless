@@ -1,0 +1,1179 @@
+Resources:
+  aBucketWebsiteBucket3BBB10BA:
+    Type: AWS::S3::Bucket
+    Properties:
+      WebsiteConfiguration:
+        ErrorDocument: error.html
+        IndexDocument: index.html
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Bucket/WebsiteBucket/Resource
+  aBucketWebsiteBucketPolicy6BC28D70:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: aBucketWebsiteBucket3BBB10BA
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt:
+                  - aBucketOriginAccessIdentity7820D75C
+                  - S3CanonicalUserId
+            Resource:
+              - Fn::GetAtt:
+                  - aBucketWebsiteBucket3BBB10BA
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - aBucketWebsiteBucket3BBB10BA
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Bucket/WebsiteBucket/Policy/Resource
+  aBucketEmptyBucketEmptyBucketProviderframeworkonEventServiceRole58709C34:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Bucket/EmptyBucket/EmptyBucketProvider/framework-onEvent/ServiceRole/Resource
+  aBucketEmptyBucketEmptyBucketProviderframeworkonEventServiceRoleDefaultPolicy0AA51711:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - SingletonLambdaCloudcomponentsEmptyBucketCustomResource09B44FFE
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: aBucketEmptyBucketEmptyBucketProviderframeworkonEventServiceRoleDefaultPolicy0AA51711
+      Roles:
+        - Ref: aBucketEmptyBucketEmptyBucketProviderframeworkonEventServiceRole58709C34
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Bucket/EmptyBucket/EmptyBucketProvider/framework-onEvent/ServiceRole/DefaultPolicy/Resource
+  aBucketEmptyBucketEmptyBucketProviderframeworkonEvent46699628:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3BucketEAC9DD43
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3VersionKeyDD9AE9E7
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3VersionKeyDD9AE9E7
+      Role:
+        Fn::GetAtt:
+          - aBucketEmptyBucketEmptyBucketProviderframeworkonEventServiceRole58709C34
+          - Arn
+      Description: AWS CDK resource provider framework - onEvent (PivotInfrastructureStack/a/Bucket/EmptyBucket/EmptyBucketProvider)
+      Environment:
+        Variables:
+          USER_ON_EVENT_FUNCTION_ARN:
+            Fn::GetAtt:
+              - SingletonLambdaCloudcomponentsEmptyBucketCustomResource09B44FFE
+              - Arn
+      Handler: framework.onEvent
+      Runtime: nodejs10.x
+      Timeout: 900
+    DependsOn:
+      - aBucketEmptyBucketEmptyBucketProviderframeworkonEventServiceRoleDefaultPolicy0AA51711
+      - aBucketEmptyBucketEmptyBucketProviderframeworkonEventServiceRole58709C34
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Bucket/EmptyBucket/EmptyBucketProvider/framework-onEvent/Resource
+      aws:asset:path: asset.c691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49c
+      aws:asset:property: Code
+  aBucketEmptyBucketCustomResource31280A54:
+    Type: Custom::EmptyBucket
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - aBucketEmptyBucketEmptyBucketProviderframeworkonEvent46699628
+          - Arn
+      BucketName:
+        Ref: aBucketWebsiteBucket3BBB10BA
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Bucket/EmptyBucket/CustomResource/Default
+  aBucketOriginAccessIdentity7820D75C:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment:
+          Fn::Join:
+            - ""
+            - - "CloudFront OriginAccessIdentity for "
+              - Ref: aBucketWebsiteBucket3BBB10BA
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Bucket/OriginAccessIdentity/Resource
+  aBucketDeploymentAwsCliLayerC2B43915:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      Content:
+        S3Bucket:
+          Ref: AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3BucketAEADE8C7
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F
+      Description: /opt/awscli/aws
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Bucket/Deployment/AwsCliLayer/Resource
+      aws:asset:path: asset.e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68.zip
+      aws:asset:property: Content
+  aBucketDeploymentCustomResource59FF5308:
+    Type: Custom::CDKBucketDeployment
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536
+          - Arn
+      SourceBucketNames:
+        - Ref: AssetParameters1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972S3Bucket3E02593F
+      SourceObjectKeys:
+        - Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972S3VersionKey40BEFA2B
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972S3VersionKey40BEFA2B
+      DestinationBucketName:
+        Ref: aBucketWebsiteBucket3BBB10BA
+      RetainOnDelete: false
+      Prune: true
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Bucket/Deployment/CustomResource/Default
+  aDistributionCFDistributionC849C3FC:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: false
+          TargetOriginId: origin1
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - ConnectionAttempts: 3
+            ConnectionTimeout: 10
+            DomainName:
+              Fn::GetAtt:
+                - aBucketWebsiteBucket3BBB10BA
+                - RegionalDomainName
+            Id: origin1
+            S3OriginConfig:
+              OriginAccessIdentity:
+                Fn::Join:
+                  - ""
+                  - - origin-access-identity/cloudfront/
+                    - Ref: aBucketOriginAccessIdentity7820D75C
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/a/Distribution/CFDistribution
+  SingletonLambdaCloudcomponentsEmptyBucketCustomResourceServiceRoleEE758E51:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/SingletonLambdaCloudcomponentsEmptyBucketCustomResource/ServiceRole/Resource
+  SingletonLambdaCloudcomponentsEmptyBucketCustomResourceServiceRoleDefaultPolicyFA08A909:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - aBucketWebsiteBucket3BBB10BA
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - aBucketWebsiteBucket3BBB10BA
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: SingletonLambdaCloudcomponentsEmptyBucketCustomResourceServiceRoleDefaultPolicyFA08A909
+      Roles:
+        - Ref: SingletonLambdaCloudcomponentsEmptyBucketCustomResourceServiceRoleEE758E51
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/SingletonLambdaCloudcomponentsEmptyBucketCustomResource/ServiceRole/DefaultPolicy/Resource
+  SingletonLambdaCloudcomponentsEmptyBucketCustomResource09B44FFE:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameterse6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171bS3BucketC6A458D5
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameterse6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171bS3VersionKey50CD46CB
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameterse6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171bS3VersionKey50CD46CB
+      Role:
+        Fn::GetAtt:
+          - SingletonLambdaCloudcomponentsEmptyBucketCustomResourceServiceRoleEE758E51
+          - Arn
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Timeout: 900
+    DependsOn:
+      - SingletonLambdaCloudcomponentsEmptyBucketCustomResourceServiceRoleDefaultPolicyFA08A909
+      - SingletonLambdaCloudcomponentsEmptyBucketCustomResourceServiceRoleEE758E51
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/SingletonLambdaCloudcomponentsEmptyBucketCustomResource/Resource
+      aws:asset:path: asset.e6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171b
+      aws:asset:property: Code
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":s3:::"
+                    - Ref: AssetParameters1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972S3Bucket3E02593F
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":s3:::"
+                    - Ref: AssetParameters1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972S3Bucket3E02593F
+                    - /*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - aBucketWebsiteBucket3BBB10BA
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - aBucketWebsiteBucket3BBB10BA
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF
+      Roles:
+        - Ref: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3Bucket55EFA30C
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3VersionKey60329B70
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3VersionKey60329B70
+      Role:
+        Fn::GetAtt:
+          - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265
+          - Arn
+      Handler: index.handler
+      Layers:
+        - Ref: aBucketDeploymentAwsCliLayerC2B43915
+      Runtime: python3.6
+      Timeout: 900
+    DependsOn:
+      - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF
+      - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource
+      aws:asset:path: asset.c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf
+      aws:asset:property: Code
+  PivotApi24DD7B27:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: Pivot API
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Resource
+  PivotApiCloudWatchRole72F736B4:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/CloudWatchRole/Resource
+  PivotApiAccount1642D449:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn:
+        Fn::GetAtt:
+          - PivotApiCloudWatchRole72F736B4
+          - Arn
+    DependsOn:
+      - PivotApi24DD7B27
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Account
+  PivotApiDeploymentCF8FCFF25397f885db516bd7ee393f8891f99c65:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Ref: PivotApi24DD7B27
+      Description: Automatically created by the RestApi construct
+    DependsOn:
+      - PivotApielectionsDELETE56E3B3A7
+      - PivotApielectionsGET6958BAB5
+      - PivotApielectionsOPTIONS8033CA20
+      - PivotApielectionsPOSTB670BC9E
+      - PivotApielectionsPUT1EAA7D62
+      - PivotApielectionsB9CED3F1
+      - PivotApiOPTIONSE7ED1839
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Deployment/Resource
+  PivotApiDeploymentStageprod23303C7B:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId:
+        Ref: PivotApi24DD7B27
+      DeploymentId:
+        Ref: PivotApiDeploymentCF8FCFF25397f885db516bd7ee393f8891f99c65
+      StageName: prod
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/DeploymentStage.prod/Resource
+  PivotApiOPTIONSE7ED1839:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Fn::GetAtt:
+          - PivotApi24DD7B27
+          - RootResourceId
+      RestApiId:
+        Ref: PivotApi24DD7B27
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/OPTIONS/Resource
+  PivotApielectionsB9CED3F1:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - PivotApi24DD7B27
+          - RootResourceId
+      PathPart: elections
+      RestApiId:
+        Ref: PivotApi24DD7B27
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/Resource
+  PivotApielectionsOPTIONS8033CA20:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Ref: PivotApielectionsB9CED3F1
+      RestApiId:
+        Ref: PivotApi24DD7B27
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/OPTIONS/Resource
+  PivotApielectionsPOSTApiPermissionPivotInfrastructureStackPivotApiF13124E9POSTelectionsAFB39059:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - POSTelectionsLambdaBF097079
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: PivotApi24DD7B27
+            - /
+            - Ref: PivotApiDeploymentStageprod23303C7B
+            - /POST/elections
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/POST/ApiPermission.PivotInfrastructureStackPivotApiF13124E9.POST..elections
+  PivotApielectionsPOSTApiPermissionTestPivotInfrastructureStackPivotApiF13124E9POSTelections6BFC7419:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - POSTelectionsLambdaBF097079
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: PivotApi24DD7B27
+            - /test-invoke-stage/POST/elections
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/POST/ApiPermission.Test.PivotInfrastructureStackPivotApiF13124E9.POST..elections
+  PivotApielectionsPOSTB670BC9E:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId:
+        Ref: PivotApielectionsB9CED3F1
+      RestApiId:
+        Ref: PivotApi24DD7B27
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - POSTelectionsLambdaBF097079
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/POST/Resource
+  PivotApielectionsGETApiPermissionPivotInfrastructureStackPivotApiF13124E9GETelectionsAE9DB2F3:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - GETelectionsLambdaD65F26B5
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: PivotApi24DD7B27
+            - /
+            - Ref: PivotApiDeploymentStageprod23303C7B
+            - /GET/elections
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/GET/ApiPermission.PivotInfrastructureStackPivotApiF13124E9.GET..elections
+  PivotApielectionsGETApiPermissionTestPivotInfrastructureStackPivotApiF13124E9GETelections5CBFA2C3:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - GETelectionsLambdaD65F26B5
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: PivotApi24DD7B27
+            - /test-invoke-stage/GET/elections
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/GET/ApiPermission.Test.PivotInfrastructureStackPivotApiF13124E9.GET..elections
+  PivotApielectionsGET6958BAB5:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: PivotApielectionsB9CED3F1
+      RestApiId:
+        Ref: PivotApi24DD7B27
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - GETelectionsLambdaD65F26B5
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/GET/Resource
+  PivotApielectionsPUTApiPermissionPivotInfrastructureStackPivotApiF13124E9PUTelectionsB4D55DA8:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - PUTelectionsLambda53D6F5CE
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: PivotApi24DD7B27
+            - /
+            - Ref: PivotApiDeploymentStageprod23303C7B
+            - /PUT/elections
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/PUT/ApiPermission.PivotInfrastructureStackPivotApiF13124E9.PUT..elections
+  PivotApielectionsPUTApiPermissionTestPivotInfrastructureStackPivotApiF13124E9PUTelections21DFE0BC:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - PUTelectionsLambda53D6F5CE
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: PivotApi24DD7B27
+            - /test-invoke-stage/PUT/elections
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/PUT/ApiPermission.Test.PivotInfrastructureStackPivotApiF13124E9.PUT..elections
+  PivotApielectionsPUT1EAA7D62:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: PUT
+      ResourceId:
+        Ref: PivotApielectionsB9CED3F1
+      RestApiId:
+        Ref: PivotApi24DD7B27
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - PUTelectionsLambda53D6F5CE
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/PUT/Resource
+  PivotApielectionsDELETEApiPermissionPivotInfrastructureStackPivotApiF13124E9DELETEelectionsCA3AFA15:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - DELETEelectionsLambda375FD037
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: PivotApi24DD7B27
+            - /
+            - Ref: PivotApiDeploymentStageprod23303C7B
+            - /DELETE/elections
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/DELETE/ApiPermission.PivotInfrastructureStackPivotApiF13124E9.DELETE..elections
+  PivotApielectionsDELETEApiPermissionTestPivotInfrastructureStackPivotApiF13124E9DELETEelections9D4A42EC:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - DELETEelectionsLambda375FD037
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: PivotApi24DD7B27
+            - /test-invoke-stage/DELETE/elections
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/DELETE/ApiPermission.Test.PivotInfrastructureStackPivotApiF13124E9.DELETE..elections
+  PivotApielectionsDELETE56E3B3A7:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: DELETE
+      ResourceId:
+        Ref: PivotApielectionsB9CED3F1
+      RestApiId:
+        Ref: PivotApi24DD7B27
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - DELETEelectionsLambda375FD037
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PivotApi/Default/elections/DELETE/Resource
+  POSTelectionsLambdaServiceRole1F920D94:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/POSTelectionsLambda/ServiceRole/Resource
+  POSTelectionsLambdaBF097079:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3Bucket32F42D9B
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3VersionKeyAC58102E
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3VersionKeyAC58102E
+      Role:
+        Fn::GetAtt:
+          - POSTelectionsLambdaServiceRole1F920D94
+          - Arn
+      Handler: handlers/POST.handler
+      Runtime: python3.6
+    DependsOn:
+      - POSTelectionsLambdaServiceRole1F920D94
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/POSTelectionsLambda/Resource
+      aws:asset:path: asset.fb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85
+      aws:asset:property: Code
+  GETelectionsLambdaServiceRole30801DCB:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/GETelectionsLambda/ServiceRole/Resource
+  GETelectionsLambdaD65F26B5:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3Bucket32F42D9B
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3VersionKeyAC58102E
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3VersionKeyAC58102E
+      Role:
+        Fn::GetAtt:
+          - GETelectionsLambdaServiceRole30801DCB
+          - Arn
+      Handler: handlers/GET.handler
+      Runtime: python3.6
+    DependsOn:
+      - GETelectionsLambdaServiceRole30801DCB
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/GETelectionsLambda/Resource
+      aws:asset:path: asset.fb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85
+      aws:asset:property: Code
+  PUTelectionsLambdaServiceRole086AAD43:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PUTelectionsLambda/ServiceRole/Resource
+  PUTelectionsLambda53D6F5CE:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3Bucket32F42D9B
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3VersionKeyAC58102E
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3VersionKeyAC58102E
+      Role:
+        Fn::GetAtt:
+          - PUTelectionsLambdaServiceRole086AAD43
+          - Arn
+      Handler: handlers/PUT.handler
+      Runtime: python3.6
+    DependsOn:
+      - PUTelectionsLambdaServiceRole086AAD43
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/PUTelectionsLambda/Resource
+      aws:asset:path: asset.fb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85
+      aws:asset:property: Code
+  DELETEelectionsLambdaServiceRoleBE5D9323:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/DELETEelectionsLambda/ServiceRole/Resource
+  DELETEelectionsLambda375FD037:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3Bucket32F42D9B
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3VersionKeyAC58102E
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3VersionKeyAC58102E
+      Role:
+        Fn::GetAtt:
+          - DELETEelectionsLambdaServiceRoleBE5D9323
+          - Arn
+      Handler: handlers/DELETE.handler
+      Runtime: python3.6
+    DependsOn:
+      - DELETEelectionsLambdaServiceRoleBE5D9323
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/DELETEelectionsLambda/Resource
+      aws:asset:path: asset.fb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85
+      aws:asset:property: Code
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.88.0,@aws-cdk/assets=1.88.0,@aws-cdk/aws-apigateway=1.88.0,@aws-cdk/aws-applicationautoscaling=1.88.0,@aws-cdk/aws-autoscaling-common=1.88.0,@aws-cdk/aws-certificatemanager=1.88.0,@aws-cdk/aws-cloudfront=1.88.0,@aws-cdk/aws-cloudwatch=1.88.0,@aws-cdk/aws-codeguruprofiler=1.88.0,@aws-cdk/aws-ec2=1.88.0,@aws-cdk/aws-ecr=1.88.0,@aws-cdk/aws-ecr-assets=1.88.0,@aws-cdk/aws-events=1.88.0,@aws-cdk/aws-iam=1.88.0,@aws-cdk/aws-kms=1.88.0,@aws-cdk/aws-lambda=1.88.0,@aws-cdk/aws-logs=1.88.0,@aws-cdk/aws-route53=1.88.0,@aws-cdk/aws-route53-targets=1.88.0,@aws-cdk/aws-s3=1.88.0,@aws-cdk/aws-s3-assets=1.88.0,@aws-cdk/aws-s3-deployment=1.88.0,@aws-cdk/aws-sqs=1.88.0,@aws-cdk/aws-ssm=1.88.0,@aws-cdk/cloud-assembly-schema=1.88.0,@aws-cdk/core=1.88.0,@aws-cdk/custom-resources=1.88.0,@aws-cdk/cx-api=1.88.0,@aws-cdk/lambda-layer-awscli=1.88.0,@aws-cdk/region-info=1.88.0,jsii-runtime=node.js/v12.20.1
+    Metadata:
+      aws:cdk:path: PivotInfrastructureStack/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Parameters:
+  AssetParameterse6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171bS3BucketC6A458D5:
+    Type: String
+    Description: S3 bucket for asset "e6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171b"
+  AssetParameterse6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171bS3VersionKey50CD46CB:
+    Type: String
+    Description: S3 key for asset version "e6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171b"
+  AssetParameterse6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171bArtifactHash30F7695B:
+    Type: String
+    Description: Artifact hash for asset "e6a26cbb7bd83103da33d4e54a9641ca6f921d14670e524f75aeb8ab4899171b"
+  AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3BucketEAC9DD43:
+    Type: String
+    Description: S3 bucket for asset "c691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49c"
+  AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cS3VersionKeyDD9AE9E7:
+    Type: String
+    Description: S3 key for asset version "c691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49c"
+  AssetParametersc691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49cArtifactHash627DAAA7:
+    Type: String
+    Description: Artifact hash for asset "c691172cdeefa2c91b5a2907f9d81118e47597634943344795f1a844192dd49c"
+  AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3BucketAEADE8C7:
+    Type: String
+    Description: S3 bucket for asset "e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68"
+  AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F:
+    Type: String
+    Description: S3 key for asset version "e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68"
+  AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68ArtifactHashD9A515C3:
+    Type: String
+    Description: Artifact hash for asset "e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68"
+  AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3Bucket55EFA30C:
+    Type: String
+    Description: S3 bucket for asset "c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf"
+  AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3VersionKey60329B70:
+    Type: String
+    Description: S3 key for asset version "c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf"
+  AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfArtifactHash85F58E48:
+    Type: String
+    Description: Artifact hash for asset "c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf"
+  AssetParameters1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972S3Bucket3E02593F:
+    Type: String
+    Description: S3 bucket for asset "1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972"
+  AssetParameters1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972S3VersionKey40BEFA2B:
+    Type: String
+    Description: S3 key for asset version "1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972"
+  AssetParameters1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972ArtifactHashAE54D831:
+    Type: String
+    Description: Artifact hash for asset "1c9843c0e0d9a56b50f96026ef6a8886d22967cb284d95b4351af8e8cf6b8972"
+  AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3Bucket32F42D9B:
+    Type: String
+    Description: S3 bucket for asset "fb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85"
+  AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85S3VersionKeyAC58102E:
+    Type: String
+    Description: S3 key for asset version "fb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85"
+  AssetParametersfb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85ArtifactHash666CE845:
+    Type: String
+    Description: Artifact hash for asset "fb92afe2ffddeafdb0e30a5741e0b34f4cdfa350c6a0eae84085f7c5d0468e85"
+Outputs:
+  PivotApiEndpoint9735205D:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: PivotApi24DD7B27
+          - .execute-api.
+          - Ref: AWS::Region
+          - "."
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: PivotApiDeploymentStageprod23303C7B
+          - /
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2
+

@@ -1,24 +1,27 @@
-# Getting Started with Serverless Stack Resources
+# Pivot Infrastructure
 
-This project was bootstrapped with [Create Serverless Stack](https://github.com/serverless-stack/serverless-stack).
+Pivot's Infrastructure is managed with TypeScript and the CDK.
 
-## Usage
+The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
-Install the npm packages
- 
-``` bash 
-$ npm install 
-``` 
- 
-Build the SST app
- 
-``` bash 
-$ npx sst build 
-``` 
- 
-Then deploy it to your AWS account 
- 
-``` bash 
-$ npx sst deploy 
-``` 
+## Requirements
 
+ * nodejs
+ * npm
+
+## Useful commands
+
+ * `npm run build`   compile typescript to js
+ * `npm run watch`   watch for changes and compile
+ * `npm run test`    perform the jest unit tests
+ * `npx cdk deploy`      deploy this stack to your default AWS account/region
+ * `npx cdk diff`        compare deployed stack with current state
+ * `npx cdk synth`       emits the synthesized CloudFormation template
+
+# Deploy
+
+Run:
+
+`npx cdk deploy`
+
+The output will contain an API Gateway URL. Save this for later. You will need it to set up the UI.

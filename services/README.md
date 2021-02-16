@@ -1,29 +1,15 @@
 # Pivot Services
 
-Each service has its own directory. Services are managed separately. Lambda infrastructure is managed via serverless.yml files. Other infrastructure should be managed in the [infrastructure](../infrastructure) directory.
+Each entity has its own directory. Service infrastructure is managed in the [infrastructure](../infrastructure) directory.
+
+## Requirements
+
+ * Python 3.6+
+ * pip
+ * virtualenv is recommended
 
 ## Usage
 
-In each directory
+Install [boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html); either within a virtualenv or globally.
 
-Install any relevant serverless framework plugins
-
-```bash
-$ npm install
-```
-
-```bash
-$ serverless invoke local --function theFunctionName --path event.json
-```
-
-Where...
-- `event.json` contains the request event info appropriate to the service.
-- `theFunctionName` is a function name listed in the service's serverless.yml file
-
-Finally, run this to deploy to the API to your AWS account.
-
-```bash
-$ serverless deploy
-```
-
-The API service refers to an `.env` file for secret environment variables that are not checking in to the repo. Make su
+Make code changes, then deploy them to AWS using the [infrastructure deployment instructions](../infrastructure/README.md).

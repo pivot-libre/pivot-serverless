@@ -2,6 +2,9 @@
 node_modules
 /dist
 
+# config file
+/config.json
+/public/config.json
 
 # local env files
 .env.local
