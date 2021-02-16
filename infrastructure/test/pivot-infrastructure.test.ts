@@ -8,4 +8,6 @@ test('Empty Stack', () => {
     const stack = new PivotInfrastructure.PivotInfrastructureStack(app, 'MyTestStack');
     // THEN
     expect(stack.staticWebsite).not.toBeNull();
+    expect(stack.api).not.toBeNull();
+    expect(stack.userDataBucket).not.toBeNull();
 });

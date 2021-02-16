@@ -1,12 +1,14 @@
 import {Stack, StackProps, Construct, RemovalPolicy} from '@aws-cdk/core';
 import { SPADeploy, SPADeploymentWithCloudFront } from 'cdk-spa-deploy';
-import * as lambda from '@aws-cdk/aws-lambda';
+import { IGrantable } from '@aws-cdk/aws-iam';
+import { Code, Function, Runtime } from '@aws-cdk/aws-lambda';
 import * as apigw from '@aws-cdk/aws-apigateway';
-import { create } from 'domain';
+import { BlockPublicAccess, Bucket, BucketAccessControl, BucketEncryption } from '@aws-cdk/aws-s3';
 
 export class PivotInfrastructureStack extends Stack {
   readonly staticWebsite : SPADeploymentWithCloudFront;
   readonly api: apigw.RestApi;
+  readonly userDataBucket: Bucket;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -21,6 +23,14 @@ export class PivotInfrastructureStack extends Stack {
       this.staticWebsite.distribution.distributionDomainName //for the static web app
     ];
 
+    this.userDataBucket = new Bucket(this, 'user-data', {
+      accessControl: BucketAccessControl.PRIVATE,
+      autoDeleteObjects: true,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      encryption: BucketEncryption.S3_MANAGED,
+      removalPolicy: RemovalPolicy.DESTROY, //TODO: paramaterize this so that prod data is RETAIN
+    });
+    
     this.api =  new apigw.RestApi(this, `api`, {
       restApiName: `Pivot API`,
       defaultCorsPreflightOptions: {
@@ -32,23 +42,45 @@ export class PivotInfrastructureStack extends Stack {
       }
     });
 
-    this.createCrudApi('election', this.api);
+    const lambdas = this.createCrudApi('election', this.api);
+    lambdas.forEach((lambda) => {
+      //TODO grant permissions more selectively
+      this.userDataBucket.grantReadWrite(lambda.grantPrincipal);
+      // this.userDataBucket.grantDelete(lambda.grantPrincipal);
+      lambda.addEnvironment('USER_DATA_BUCKET', this.userDataBucket.bucketName);
+    });
   }
 
-  private createCrudApi(name: string, api: apigw.RestApi) {
+  private createCrudApi(name: string, api: apigw.RestApi): Array<Function> {
     const entityRootResource = api.root.addResource(name);
-    entityRootResource.addMethod('POST', this.buildLambdaIntegration(name, 'create'));
+    
+    const createLambda = this.createLambdaForCrudOperation(name, 'create');
+    entityRootResource.addMethod('POST', new apigw.LambdaIntegration(createLambda));
 
     const entityParameterizedResource = entityRootResource.addResource('{id}');
-    entityParameterizedResource.addMethod('GET', this.buildLambdaIntegration(name, 'read'));
-    entityParameterizedResource.addMethod('PUT', this.buildLambdaIntegration(name, 'update'));
-    entityParameterizedResource.addMethod('DELETE', this.buildLambdaIntegration(name, 'delete'));
 
-    return null;
+    const readLambda = this.createLambdaForCrudOperation(name, 'read');
+    entityParameterizedResource.addMethod('GET', new apigw.LambdaIntegration(readLambda));
+
+    const updateLambda = this.createLambdaForCrudOperation(name, 'update');
+
+    entityParameterizedResource.addMethod('PUT', new apigw.LambdaIntegration(updateLambda));
+    
+    const deleteLambda = this.createLambdaForCrudOperation(name, 'delete');
+    entityParameterizedResource.addMethod('DELETE', new apigw.LambdaIntegration(deleteLambda));
+
+    const lambdas = [
+      createLambda,
+      readLambda,
+      updateLambda,
+      deleteLambda
+    ];
+
+    return lambdas;
   }
 
   private createLambdaForCrudOperation(name: string, operation: string) {
-    const code = lambda.Code.fromAsset(
+    const code = Code.fromAsset(
       `../services/${name}`, //relative to cdk.json
       {
         exclude: [
@@ -61,17 +93,12 @@ export class PivotInfrastructureStack extends Stack {
         ]
       }
     );
-    const lambdaForOperation = new lambda.Function(this, `${operation}-${name}-Lambda`, {
-      runtime: lambda.Runtime.PYTHON_3_6,
+    const lambdaForOperation = new Function(this, `${operation}-${name}-Lambda`, {
+      runtime: Runtime.PYTHON_3_6,
       code: code,
       handler: `handlers/${operation}.handler`
     });
     return lambdaForOperation;
-  }
-  private buildLambdaIntegration(entityName: string, nameOfOperation: string) {
-    const lambdaForOperation = this.createLambdaForCrudOperation(entityName, nameOfOperation);
-    const lambdaIntegration = new apigw.LambdaIntegration(lambdaForOperation);
-    return lambdaIntegration;
   }
 
 }
