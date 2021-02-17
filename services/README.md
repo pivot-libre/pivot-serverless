@@ -1,6 +1,6 @@
 # Pivot Services
 
-Each entity has its own directory.  Service infrastructure is managed in the [infrastructure](../infrastructure) directory.
+Each entity has its own directory. Service infrastructure is managed in the [infrastructure](../infrastructure) directory.
 
 ## Requirements
 

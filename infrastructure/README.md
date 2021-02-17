@@ -9,29 +9,8 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
  * nodejs
  * npm
 
-## Setup
-
-```
-cd infrastructure
-```
-
-Install the dependencies.
-
-```
-npm install
-```
-
-Build and deploy the stack
-
-```
-npx cdk deploy
-```
-
-The output will contain an API Gateway URL. Save this for later. You will need it to set up the UI.
-
-
-## Useful commands
-
+## Useful Commands
+ * `npm install`     install dependencies
  * `npm run build`   compile typescript to js
  * `npm run watch`   watch for changes and compile
  * `npm run test`    perform the jest unit tests

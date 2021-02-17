@@ -34,7 +34,8 @@ npx cdk deploy
 # copy the API Gateway URL from the output to your clipboard
 # ex: https://1234567890.execute-api.us-east-2.amazonaws.com/prod/
 cd ../ui
-# copy the example ui config to a .gitignored location 
+# copy the example ui config to public/config.json
+# (this path is ignored in ui/.gitignore)
 cp config.example.json public/config.json
 # paste the API Gateway URL from your clipboard into the config file
 vim public/config.json
