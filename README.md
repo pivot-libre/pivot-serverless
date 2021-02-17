@@ -30,6 +30,7 @@ npm install
 npm run build
 cd ../infrastructure
 npm install
+npx cdk bootstrap
 npx cdk deploy
 # copy the API Gateway URL from the output to your clipboard
 # ex: https://1234567890.execute-api.us-east-2.amazonaws.com/prod/
