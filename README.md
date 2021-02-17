@@ -57,7 +57,14 @@ npx cdk deploy
 # ex: https://1234567890.cloudfront.net
 ```
 
-# Details
+## Tear-Down
+
+```bash
+cd infrastructure
+npx cdk destroy
+```
+
+## Details
 Additional documentation is available in each directory:
 - [ui](./ui/README.md)
 - [sevices](./services/README.md)
