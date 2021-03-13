@@ -1,5 +1,7 @@
 # Pivot Serverless 
 
+Pivot is a web app for conducting [Ranked Pairs](https://en.wikipedia.org/wiki/Ranked_pairs) elections
+
 This repo is split into:
 
 - **ui**: A [Vue JS](https://vuejs.org/) application
