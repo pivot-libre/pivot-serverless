@@ -6,7 +6,7 @@ This repo is split into:
 
 - **ui**: A [Vue JS](https://vuejs.org/) application
 - **services**: [Python](https://www.python.org/) web services
-- **infrastructure**: An [AWS Typescript CDK](https://aws.amazon.com/cdk/) project
+- **infrastructure**: A Typescript [AWS CDK](https://aws.amazon.com/cdk/) project
 
 ## Requirements
  * nodejs v 10+
