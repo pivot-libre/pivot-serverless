@@ -26,6 +26,7 @@ jobs:
           with:
             node-version: 14
         - run: |
+            mkdir -p ui/dist
             cd infrastructure
             npm install
             npm run test
