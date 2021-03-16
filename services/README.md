@@ -13,3 +13,7 @@ Each entity has its own directory. Service infrastructure is managed in the [inf
 Install [boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html); either within a virtualenv or globally.
 
 Make code changes, then deploy them to AWS using the [infrastructure deployment instructions](../infrastructure/README.md).
+
+## Useful Commands
+
+ * `python -m unittest` run unit tests
