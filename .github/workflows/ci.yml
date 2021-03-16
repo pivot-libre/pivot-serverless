@@ -1,0 +1,34 @@
+name: ci
+on: [push, pull_request]
+jobs:
+    ui:
+      runs-on: ubuntu-latest
+      container:
+        image: node:lts
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v2
+          with:
+            node-version: 14
+        - run: |
+            cd ui
+            npm install
+            npm run test:unit
+            npm run build
+            
+    infrastructure:
+      runs-on: ubuntu-latest
+      container:
+        image: node:lts
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v2
+          with:
+            node-version: 14
+        - run: |
+            # seed the ui's dist directory so that the cdk assets can be built
+            mkdir -p ui/dist
+            cd infrastructure
+            npm install
+            npm run test
+            npm run build
