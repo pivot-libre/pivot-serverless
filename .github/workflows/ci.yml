@@ -26,6 +26,7 @@ jobs:
           with:
             node-version: 14
         - run: |
+            # seed the ui's dist directory so that the cdk assets can be built
             mkdir -p ui/dist
             cd infrastructure
             npm install
