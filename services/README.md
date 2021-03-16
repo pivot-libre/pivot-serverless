@@ -16,4 +16,4 @@ Make code changes, then deploy them to AWS using the [infrastructure deployment 
 
 ## Useful Commands
 
- * `python -m unittest` run unit tests
+ * `python3 -m unittest` run unit tests
