@@ -81,7 +81,7 @@ export class PivotInfrastructureStack extends Stack {
 
   private createLambdaForCrudOperation(name: string, operation: string) {
     const code = Code.fromAsset(
-      `../services/${name}`, //relative to cdk.json
+      `../services/services/${name}`, //relative to cdk.json
       {
         exclude: [
           '*.pyc',

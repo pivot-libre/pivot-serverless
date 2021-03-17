@@ -1,4 +1,5 @@
 import json
+from services.common.http_support import cors_headers
 
 def handler(event, context):
     body = {
@@ -10,9 +11,7 @@ def handler(event, context):
         "statusCode": 200,
         "body": json.dumps(body),
         "headers": {
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "OPTIONS,POST,GET,DELETE,PUT"
+            **cors_headers()
         }
     }
 
