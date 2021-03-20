@@ -1,5 +1,6 @@
 import json
 from services.common.http_support import cors_headers
+import boto3
 
 def handler(event, context):
     body = {
