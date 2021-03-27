@@ -1,13 +1,12 @@
 import json
 from services.common.http_support import cors_headers
-import boto3
+
 
 def handler(event, context):
     body = {
         "message": "POST executed successfully!",
         "input": event
     }
-
     response = {
         "statusCode": 200,
         "body": json.dumps(body),

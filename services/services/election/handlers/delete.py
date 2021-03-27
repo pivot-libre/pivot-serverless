@@ -1,5 +1,6 @@
 import json
 
+
 def handler(event, context):
     body = {
         "message": "DELETE executed successfully!",

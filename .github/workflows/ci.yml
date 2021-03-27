@@ -44,5 +44,5 @@ jobs:
         - run: |
             cd services
             pip3 install -r requirements.txt
-            pylint services tests
+            flake8 services tests
             python3 -m unittest
