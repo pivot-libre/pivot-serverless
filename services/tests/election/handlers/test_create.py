@@ -5,6 +5,7 @@ Test Election Creation
 import unittest
 from services.election.handlers.create import handler
 
+
 class CreateTest(unittest.TestCase):
     """
     Election Creation Test Suite
@@ -25,6 +26,7 @@ class CreateTest(unittest.TestCase):
             'statusCode': 200
         }
         self.assertEqual(handler({}, {}), expected)
+
 
 if __name__ == '__main__':
     unittest.main()
