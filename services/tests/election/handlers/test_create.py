@@ -1,8 +1,20 @@
+"""
+Test Election Creation
+"""
+
 import unittest
 from services.election.handlers.create import handler
 
 class CreateTest(unittest.TestCase):
+    """
+    Election Creation Test Suite
+    """
+
     def test(self):
+        """
+        happy-path test for echoed response
+        """
+
         expected = {
             'body': '{"message": "POST executed successfully!", "input": {}}',
             'headers': {

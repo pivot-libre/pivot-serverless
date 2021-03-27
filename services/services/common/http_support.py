@@ -1,3 +1,7 @@
+"""
+Common HTTP Functionality
+"""
+
 def cors_headers():
     """
     Return Cross-Origin Resource Sharing (CORS) HTTP Headers.
