@@ -16,4 +16,5 @@ Make code changes, then deploy them to AWS using the [infrastructure deployment 
 
 ## Useful Commands
 
+ * `flake8` lint code
  * `python3 -m unittest` run unit tests
