@@ -1,6 +1,5 @@
 import json
 
-print "borked"
 
 def handler(event, context):
     body = {
